@@ -142,6 +142,27 @@ public class GenerateInterfaces {
     for (File directory : packagePath) {
       topicDefinitionFileProvider.addDirectory(directory);
       serviceDefinitionFileProvider.addDirectory(directory);
+
+      //ugly hack for action definitions
+      String dir = directory.getAbsolutePath();
+      String actionDir = dir + "/action";
+      File actionFile = new File(actionDir);
+      if(actionFile.exists()) {
+        int idx = dir.indexOf("src");
+        if(idx >= 0){
+          String subDir = dir.substring(idx);
+          dir = dir.replace(subDir,"devel/share/");
+          String[] splits = directory.getAbsolutePath().split("/");
+          if(splits.length >0){
+            dir += splits[splits.length-1];
+            File newFileDir = new File(dir);
+            if(newFileDir.exists()){
+              topicDefinitionFileProvider.addDirectory(newFileDir);
+            }
+          }
+        }
+      }
+
     }
     topicDefinitionFileProvider.update();
     serviceDefinitionFileProvider.update();
